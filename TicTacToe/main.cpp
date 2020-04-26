@@ -8,6 +8,8 @@
 const int WINDOW_WIDTH = 640;
 const int WINDOW_HEIGHT = 640;
 
+const int BOARD_SIZE = 3;
+
 bool checkInput(Board* board, SDL_Event* e, Piece p);
 
 int main(int argc, char* argv[]) {
@@ -20,7 +22,6 @@ int main(int argc, char* argv[]) {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) {
 		printf("Unable to initialize SDL: %s", SDL_GetError());
 		return 1;
-
 	} else {
 		window = SDL_CreateWindow("Tic-Tac-Toe", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
 		if (window == NULL) {
