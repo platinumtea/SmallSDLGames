@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include "Window.h"
+#include "Font.h"
 
 const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 768;
@@ -24,13 +25,22 @@ int main(int argc, char* argv[]) {
 			logSDLError(std::cout, "SDL_CreateWindow");
 			return 1;
 		}
+		mainWindow.setIcon("img/blackjack-icon.ico");
+
+		// Load resources
+		SDL_Texture* cards = mainWindow.loadTexture("img/cards.png");
+		SDL_Texture* background = mainWindow.loadTexture("img/casino-background.png");
+
+		Font mainFont("fonts/calibri.ttf", 36);
+		SDL_Texture* titleText = mainWindow.convertToTexture(mainFont.renderFontSolid("Blackjack", { 0, 0, 0, 255 }));
+
 
 		// Main loop
 		bool quit = false;
 		SDL_Event e;
 
 		while (!quit) {
-
+			// Events
 			while (SDL_PollEvent(&e)) {
 
 				switch (e.type) {
@@ -41,7 +51,24 @@ int main(int argc, char* argv[]) {
 
 				}
 			}
+
+			// Logic
+
+
+			// Render
+
+			mainWindow.clear();
+
+			mainWindow.copy(background, NULL, NULL);
+			mainWindow.copy(titleText, NULL, 0, 0, mainFont.getWidth("Blackjack"), 36);
+
+			mainWindow.update();
+
+			SDL_WaitEvent(NULL);
 		}
+
+		SDL_DestroyTexture(cards);
+		SDL_DestroyTexture(background);
 	}
 
 
@@ -58,7 +85,7 @@ bool initSDL(Uint32 sdlFlags, int imgFlags) {
 		logSDLError(std::cout, "SDL_Init");
 		return false;
 	} else {
-		if (!IMG_Init(imgFlags)) {
+		if (!(IMG_Init(imgFlags) & imgFlags)) {
 			logSDLError(std::cout, "IMG_Init");
 			return false;
 		} else {
