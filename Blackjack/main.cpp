@@ -3,8 +3,12 @@
 #include <SDL_ttf.h>
 #include <string>
 #include <iostream>
+#include <vector>
 #include "Window.h"
 #include "Font.h"
+#include "Card.h"
+#include "Dealer.h"
+#include "Player.h"
 
 const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 768;
@@ -35,12 +39,22 @@ int main(int argc, char* argv[]) {
 		SDL_Texture* titleText = mainWindow.convertToTexture(mainFont.renderFontSolid("Blackjack", { 0, 0, 0, 255 }));
 
 
-		// Main loop
+		// Main loop flag
 		bool quit = false;
+
+		// Event structure
 		SDL_Event e;
 
+		// Game entities
+		Dealer dealer;
+		Player player(&dealer);
+
+		player.startRound();
+
 		while (!quit) {
-			// Events
+			// ---------------
+			// EVENTS
+			// ---------------
 			while (SDL_PollEvent(&e)) {
 
 				switch (e.type) {
@@ -52,15 +66,26 @@ int main(int argc, char* argv[]) {
 				}
 			}
 
-			// Logic
+			// ---------------
+			// LOGIC
+			// ---------------
 
 
-			// Render
+			// ---------------
+			// RENDERING
+			// ---------------
 
+			// Clear window and render background
 			mainWindow.clear();
 
 			mainWindow.copy(background, NULL, NULL);
 			mainWindow.copy(titleText, NULL, 0, 0, mainFont.getWidth("Blackjack"), 36);
+
+			// Render player cards
+
+			for (int i = 0; i < player.getHand().size(); i++) {
+				mainWindow.copy(cards, &player.getHand()[i].getClip(), 512 + i * 20 - (71 - (player.getHand().size() - 1) * 20) / 2, 500, 71, 96);
+			}
 
 			mainWindow.update();
 
